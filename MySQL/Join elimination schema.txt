@@ -1,0 +1,124 @@
+CREATE TABLE Valuuta (
+    valuutakood CHAR(3) NOT NULL,
+    nimetus VARCHAR(100) NOT NULL,
+    PRIMARY KEY (valuutakood),
+    UNIQUE KEY AK_Valuuta_nimetus (nimetus)
+);
+
+CREATE TABLE Asukoht (
+    asukoht_ID SMALLINT,
+    valuutakood CHAR(3) NOT NULL,
+    asukoht VARCHAR(255) NOT NULL,
+    PRIMARY KEY (asukoht_ID),
+    UNIQUE KEY AK_Asukoht (asukoht),
+    FOREIGN KEY (valuutakood) REFERENCES Valuuta (valuutakood) ON UPDATE CASCADE
+);
+
+CREATE TABLE Osakond (
+    osakond_ID SMALLINT,
+    asukoht_ID SMALLINT NOT NULL,
+    nimi VARCHAR(100) NOT NULL,
+    PRIMARY KEY (osakond_ID),
+    UNIQUE KEY AK_Osakond (nimi),
+    FOREIGN KEY (asukoht_ID) REFERENCES Asukoht (asukoht_ID) ON UPDATE CASCADE
+);
+
+CREATE TABLE Tootaja (
+    tootaja_ID INTEGER PRIMARY KEY AUTO_INCREMENT,
+    osakond_ID SMALLINT NOT NULL,
+    eesnimi VARCHAR(50) NOT NULL,
+    palk DECIMAL(10,2) NOT NULL,
+    perenimi VARCHAR(50),
+    alates DATE NOT NULL,
+    FOREIGN KEY (osakond_ID) REFERENCES Osakond (osakond_ID) ON UPDATE CASCADE
+);
+
+CREATE TABLE Projekt (
+    projekt_ID INTEGER PRIMARY KEY AUTO_INCREMENT,
+    tootaja_ID INTEGER NOT NULL,
+    tahtaeg DATE,
+    prioriteet SMALLINT,
+  );
+
+CREATE INDEX idx_asukoht_valuuta ON Asukoht(valuutakood);
+CREATE INDEX idx_osak_asukoht ON Osakond(asukoht_ID);
+CREATE INDEX idx_tootaja_osak ON Tootaja(osakond_ID);
+
+CREATE OR REPLACE VIEW Tootaja_osakond AS
+SELECT Tootaja.perenimi AS tootaja, Osakond.nimi AS osakond
+FROM Tootaja
+INNER JOIN Osakond ON Tootaja.osakond_ID = Osakond.osakond_ID;
+
+CREATE OR REPLACE VIEW Tootaja_osakond_klassikaline AS
+SELECT Tootaja.perenimi, Osakond.nimi AS osakond
+FROM Tootaja, Osakond
+WHERE Tootaja.osakond_ID = Osakond.osakond_ID;
+
+DROP VIEW IF EXISTS Tootaja_osakond;
+DROP VIEW IF EXISTS Tootaja_osakond_klassikaline;
+DROP TABLE IF EXISTS Projekt;
+DROP TABLE IF EXISTS Tootaja;
+DROP TABLE IF EXISTS Osakond;
+DROP TABLE IF EXISTS Asukoht;
+DROP TABLE IF EXISTS Valuuta;
+
+/*MariaDb*/ username: root password:Kiili101
+
+CREATE TABLE Valuuta (
+    valuutakood CHAR(3) NOT NULL,
+    nimetus VARCHAR(100) NOT NULL,
+    PRIMARY KEY (valuutakood),
+    UNIQUE KEY AK_Valuuta_nimetus (nimetus)
+);
+
+CREATE TABLE Asukoht (
+    asukoht_ID SMALLINT,
+    valuutakood CHAR(3) NOT NULL,
+    asukoht VARCHAR(255) NOT NULL,
+    PRIMARY KEY (asukoht_ID),
+    UNIQUE KEY AK_Asukoht (asukoht),
+    FOREIGN KEY (valuutakood) REFERENCES Valuuta (valuutakood) ON UPDATE CASCADE
+);
+
+CREATE TABLE Osakond (
+    osakond_ID SMALLINT,
+    asukoht_ID SMALLINT NOT NULL,
+    nimi VARCHAR(100) NOT NULL,
+    PRIMARY KEY (osakond_ID),
+    UNIQUE KEY AK_Osakond (nimi),
+    FOREIGN KEY (asukoht_ID) REFERENCES Asukoht (asukoht_ID) ON UPDATE CASCADE
+);
+
+CREATE TABLE Tootaja (
+    tootaja_ID INTEGER PRIMARY KEY AUTO_INCREMENT,
+    osakond_ID SMALLINT NOT NULL,
+    eesnimi VARCHAR(50) NOT NULL,
+    palk DECIMAL(10,2) NOT NULL,
+    perenimi VARCHAR(50),
+    alates DATE NOT NULL,
+    FOREIGN KEY (osakond_ID) REFERENCES Osakond (osakond_ID) ON UPDATE CASCADE
+);
+
+CREATE TABLE Projekt (
+    projekt_ID INTEGER PRIMARY KEY AUTO_INCREMENT,
+    tootaja_ID INTEGER NOT NULL,
+    tahtaeg DATE,
+    prioriteet SMALLINT,
+    );
+
+CREATE INDEX idx_asukoht_valuuta ON Asukoht(valuutakood);
+CREATE INDEX idx_osak_asukoht ON Osakond(asukoht_ID);
+CREATE INDEX idx_tootaja_osak ON Tootaja(osakond_ID);
+
+CREATE OR REPLACE VIEW Tootaja_osakond AS
+SELECT Tootaja.perenimi AS tootaja, Osakond.nimi AS osakond
+FROM Tootaja
+INNER JOIN Osakond ON Tootaja.osakond_ID = Osakond.osakond_ID;
+
+CREATE OR REPLACE VIEW Tootaja_osakond_klassikaline AS
+SELECT Tootaja.perenimi, Osakond.nimi AS osakond
+FROM Tootaja, Osakond
+WHERE Tootaja.osakond_ID = Osakond.osakond_ID;
+
+DROP VIEW IF EXISTS Tootaja_osakond, Tootaja_osakond_klassikaline;
+DROP TABLE IF EXISTS Projekt, Tootaja, Osakond, Asukoht, Valuuta;
