@@ -1,0 +1,90 @@
+-- TYP_GenreType table
+CREATE TABLE IF NOT EXISTS TYP_GenreType (
+    TYP_ID INT NOT NULL,
+    TYP_GenreType VARCHAR(25) NOT NULL,
+    PRIMARY KEY (TYP_ID),
+    UNIQUE KEY uqTYP_GenreType (TYP_GenreType)
+);
+
+-- RTT_RatingType table
+CREATE TABLE IF NOT EXISTS RTT_RatingType (
+    RTT_ID SMALLINT NOT NULL,
+    RTT_RatingType VARCHAR(25) NOT NULL,
+    PRIMARY KEY (RTT_ID),
+    UNIQUE KEY uqRTT_RatingType (RTT_RatingType)
+);
+
+-- MV_Movie table
+CREATE TABLE IF NOT EXISTS MV_Movie (
+    MV_ID INT AUTO_INCREMENT PRIMARY KEY,
+    MV_Dummy BOOLEAN
+);
+
+-- MV_NAM_Movie_Name table
+CREATE TABLE IF NOT EXISTS MV_NAM_Movie_Name (
+    MV_ID INT NOT NULL,
+    MV_NAM_Movie_Name VARCHAR(50) NOT NULL,
+    FOREIGN KEY (MV_ID) REFERENCES MV_Movie (MV_ID),
+    PRIMARY KEY (MV_ID),
+    INDEX fkMV_NAM_Movie_Name (MV_ID)
+);
+
+-- MV_GER_Movie_Gerne table
+CREATE TABLE IF NOT EXISTS MV_GER_Movie_Gerne (
+    MV_ID INT NOT NULL,
+    TYP_ID INT NOT NULL,
+    FOREIGN KEY (MV_ID) REFERENCES MV_Movie (MV_ID),
+    FOREIGN KEY (TYP_ID) REFERENCES TYP_GenreType (TYP_ID),
+    PRIMARY KEY (MV_ID),
+    INDEX fk_A_MV_GER_Movie_Gerne (MV_ID),
+    INDEX fk_K_MV_GER_Movie_Gerne (TYP_ID)
+);
+
+-- MV_ATH_Movie_Author table
+CREATE TABLE IF NOT EXISTS MV_ATH_Movie_Author (
+    MV_ID INT NOT NULL,
+    MV_ATH_Movie_Author VARCHAR(50) NOT NULL,
+    FOREIGN KEY (MV_ID) REFERENCES MV_Movie (MV_ID),
+    PRIMARY KEY (MV_ID),
+    INDEX fkMV_ATH_Movie_Author (MV_ID)
+);
+
+-- MV_RAT_Movie_Rating table
+CREATE TABLE IF NOT EXISTS MV_RAT_Movie_Rating (
+    MV_ID INT NOT NULL,
+    RTT_ID SMALLINT NOT NULL,
+    MV_RAT_ChangedAt TIMESTAMP NOT NULL,
+    FOREIGN KEY (MV_ID) REFERENCES MV_Movie (MV_ID),
+    FOREIGN KEY (RTT_ID) REFERENCES RTT_RatingType (RTT_ID),
+    PRIMARY KEY (MV_ID, MV_RAT_ChangedAt),
+    INDEX fk_A_MV_RAT_Movie_Rating (MV_ID),
+    INDEX fk_K_MV_RAT_Movie_Rating (RTT_ID)
+);
+
+-- MV_RAT_Movie_Rating partitioning (if desired)
+-- PARTITION BY RANGE (YEAR(MV_RAT_ChangedAt)) (
+--     PARTITION p2020 VALUES LESS THAN (2021),
+--     PARTITION p2021 VALUES LESS THAN (2022),
+--     ...
+-- );
+
+-- MV_RAT_Movie_Rating_MV_RAT_ChangedAt_idx index
+CREATE INDEX MV_RAT_Movie_Rating_MV_RAT_ChangedAt_idx ON MV_RAT_Movie_Rating (MV_RAT_ChangedAt);
+
+-- Views (latest perspective)
+CREATE OR REPLACE VIEW lMV_RAT_Movie_Rating AS
+SELECT DISTINCT MV_ID, RTT_ID, MV_RAT_ChangedAt
+FROM MV_RAT_Movie_Rating
+ORDER BY MV_ID DESC, MV_RAT_ChangedAt DESC;
+
+CREATE OR REPLACE VIEW lMV_Movie AS
+SELECT MV.MV_ID, NAM.MV_NAM_Movie_Name, kGER.TYP_GenreType AS TYP_GenreType,
+    GER.TYP_ID, ATH.MV_ATH_Movie_Author, RAT.MV_RAT_ChangedAt,
+    kRAT.RTT_RatingType AS RTT_RatingType, RAT.RTT_ID
+FROM MV_Movie MV
+LEFT JOIN MV_NAM_Movie_Name NAM ON NAM.MV_ID = MV.MV_ID
+LEFT JOIN MV_GER_Movie_Gerne GER ON GER.MV_ID = MV.MV_ID
+LEFT JOIN TYP_GenreType kGER ON kGER.TYP_ID = GER.TYP_ID
+LEFT JOIN MV_ATH_Movie_Author ATH ON ATH.MV_ID = MV.MV_ID
+LEFT JOIN lMV_RAT_Movie_Rating RAT ON RAT.MV_ID = MV.MV_ID
+LEFT JOIN RTT_RatingType kRAT ON kRAT.RTT_ID = RAT.RTT_ID;
