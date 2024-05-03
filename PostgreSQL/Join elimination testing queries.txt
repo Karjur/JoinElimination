@@ -1,0 +1,134 @@
+S1
+SELECT tootaja FROM
+Tootaja_osakond;
+
+S2
+SELECT perenimi FROM Tootaja_osakond_klassikaline;
+
+S3
+SELECT Osakond.asukoht_id FROM Osakond INNER JOIN Asukoht ON Osakond.asukoht_id = Asukoht.asukoht_id; 
+
+S3*
+SELECT Osakond.asukoht_id FROM Osakond LEFT OUTER JOIN Asukoht ON Osakond.asukoht_ID = Asukoht.asukoht_ID; 
+
+S4
+SELECT T.tootaja_ID, T.perenimi FROM Tootaja T, Osakond O WHERE T.osakond_ID =O.osakond_ID; 
+
+S5
+SELECT O.nimi, O.osakond_ID FROM Osakond O WHERE NOT EXISTS (SELECT 1 FROM Asukoht WHERE Asukoht.asukoht_ID=O.asukoht_ID ); 
+
+S6
+SELECT O.nimi, O.osakond_ID FROM Osakond O WHERE O.asukoht_id IN (SELECT asukoht_ID FROM Asukoht WHERE Asukoht_id IS NOT NULL); 
+
+S7
+SELECT Osakond.nimi, Osakond.osakond_ID FROM Osakond LEFT OUTER JOIN Tootaja ON Tootaja.osakond_ID = Osakond.osakond_ID AND Tootaja.tootaja_ID= (SELECT max (tootaja_ID) FROM Tootaja WHERE Tootaja.osakond_ID = Osakond.osakond_ID);
+
+S8
+SELECT tootaja_ID FROM Tootaja 
+UNION SELECT tootaja_ID FROM Tootaja;
+
+S9
+SELECT tootaja_ID FROM Tootaja INTERSECT SELECT tootaja_ID FROM Tootaja;
+
+S10
+SELECT T1.tootaja_ID FROM Tootaja T1 JOIN Tootaja T2 ON T1.tootaja_ID=T2.tootaja_ID; 
+
+S11
+SELECT T1.tootaja_ID FROM Tootaja T1, Tootaja T2 WHERE T1.tootaja_ID=T2.tootaja_ID; 
+
+S12
+SELECT P.tootaja_ID FROM Projekt P INNER JOIN Tootaja T ON T.Tootaja_ID=P.Tootaja_ID;
+
+S13
+SELECT O.nimi
+FROM Osakond O
+INNER JOIN Asukoht A ON O.asukoht_ID = A.asukoht_ID
+INNER JOIN Valuuta V ON A.valuutakood = V.valuutakood;
+
+S14
+SELECT O.nimi
+FROM Osakond O
+LEFT OUTER JOIN Asukoht A ON O.asukoht_ID = A.asukoht_ID
+LEFT OUTER JOIN Valuuta V ON A.valuutakood = V.valuutakood;
+
+S15
+SELECT T.tootaja_ID 
+FROM Tootaja T 
+INNER JOIN Osakond O ON T.osakond_id = O.osakond_id
+INNER JOIN Asukoht A ON O.asukoht_id = A.asukoht_id
+INNER JOIN Valuuta V ON A.valuutakood = V.valuutakood;
+
+S16
+SELECT T.tootaja_ID 
+FROM Tootaja T 
+LEFT OUTER JOIN Osakond O ON T.osakond_id = O.osakond_id
+LEFT OUTER JOIN Asukoht A ON O.asukoht_id = A.asukoht_id
+LEFT OUTER JOIN Valuuta V ON A.valuutakood = V.valuutakood;
+
+S17
+SELECT O.nimi
+FROM Osakond O
+WHERE O.osakond_ID IN (SELECT osakond_ID FROM Osakond);
+
+S18
+SELECT O.nimi
+FROM Osakond O
+WHERE EXISTS (SELECT 1 FROM Osakond WHERE Osakond.osakond_ID = O.osakond_ID);
+
+S19
+DELETE FROM Tootaja 
+WHERE tootaja_id IN (SELECT tootaja_ID
+FROM Tootaja);
+
+S20
+UPDATE Tootaja 
+SET eesnimi = 'UusNimi'
+WHERE tootaja_id IN (SELECT tootaja_ID
+FROM Tootaja);
+
+S21
+DELETE FROM Tootaja 
+USING Tootaja t
+LEFT JOIN Osakond o ON t.osakond_ID = o.osakond_ID
+LEFT JOIN Asukoht a ON o.asukoht_ID = a.asukoht_ID
+LEFT JOIN Valuuta v ON a.valuutakood = v.valuutakood
+WHERE Tootaja.tootaja_ID = t.tootaja_ID;
+
+S22
+CREATE TABLE Tootaja2 AS
+SELECT *
+FROM Tootaja
+WHERE 1=0;
+
+INSERT INTO Tootaja2 (tootaja_ID, osakond_ID, eesnimi, palk, perenimi, alates)
+SELECT T.tootaja_ID, T.osakond_ID, T.eesnimi, T.palk, T.perenimi, T.alates
+FROM Tootaja T
+LEFT JOIN Osakond O ON T.osakond_ID = O.osakond_ID
+LEFT JOIN Asukoht A ON O.asukoht_ID = A.asukoht_ID
+LEFT JOIN Valuuta V ON A.valuutakood = V.valuutakood;
+
+S23 
+UPDATE Tootaja
+SET eesnimi = 'Uusnimi'
+FROM Tootaja t
+LEFT JOIN Osakond o ON t.osakond_ID = o.osakond_ID
+LEFT JOIN Asukoht a ON o.asukoht_ID = a.asukoht_ID
+LEFT JOIN Valuuta v ON a.valuutakood = v.valuutakood
+WHERE Tootaja.tootaja_ID = t.tootaja_ID;
+
+S24
+SELECT T.tootaja_ID 
+FROM Tootaja T 
+LEFT OUTER JOIN Osakond O ON T.osakond_id = O.osakond_id
+INNER JOIN Asukoht A ON O.asukoht_id = A.asukoht_id
+LEFT OUTER JOIN Valuuta V ON A.valuutakood = V.valuutakood;
+
+S25
+SELECT T.tootaja_ID 
+FROM Tootaja T 
+INNER JOIN Osakond O ON T.osakond_id = O.osakond_id
+LEFT OUTER JOIN Asukoht A ON O.asukoht_id = A.asukoht_id
+LEFT OUTER JOIN Valuuta V ON A.valuutakood = V.valuutakood;
+
+S26
+SELECT tootaja_id FROM Tootaja UNION SELECT tootaja_id FROM Tootaja;
