@@ -98,6 +98,15 @@ WHERE EXISTS (
 );
 
 S22
+UPDATE Tootaja
+SET eesnimi = 'Uusnimi'
+FROM Tootaja t
+LEFT JOIN Osakond o ON t.osakond_ID = o.osakond_ID
+LEFT JOIN Asukoht a ON o.asukoht_ID = a.asukoht_ID
+LEFT JOIN Valuuta v ON a.valuutakood = v.valuutakood
+WHERE Tootaja.tootaja_ID = t.tootaja_ID;
+
+S23 
 CREATE TABLE Tootaja2 LIKE Tootaja;
 
 INSERT INTO Tootaja2 (tootaja_ID, osakond_ID, eesnimi, palk, perenimi, alates)
@@ -106,15 +115,6 @@ FROM Tootaja T
 LEFT JOIN Osakond O ON T.osakond_ID = O.osakond_ID
 LEFT JOIN Asukoht A ON O.asukoht_ID = A.asukoht_ID
 LEFT JOIN Valuuta V ON A.valuutakood = V.valuutakood;
-
-S23 
-UPDATE Tootaja
-SET eesnimi = 'Uusnimi'
-FROM Tootaja t
-LEFT JOIN Osakond o ON t.osakond_ID = o.osakond_ID
-LEFT JOIN Asukoht a ON o.asukoht_ID = a.asukoht_ID
-LEFT JOIN Valuuta v ON a.valuutakood = v.valuutakood
-WHERE Tootaja.tootaja_ID = t.tootaja_ID;
 
 S24
 SELECT T.tootaja_ID 
