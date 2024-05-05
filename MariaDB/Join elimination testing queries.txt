@@ -95,6 +95,14 @@ LEFT JOIN Valuuta v ON a.valuutakood = v.valuutakood;
 WHERE t.tootaja_ID = t.tootaja_ID;
 
 S22
+UPDATE Tootaja
+LEFT JOIN Osakond o ON Tootaja.osakond_ID = o.osakond_ID
+LEFT JOIN Asukoht a ON o.asukoht_ID = a.asukoht_ID
+LEFT JOIN Valuuta v ON a.valuutakood = v.valuutakood
+SET Tootaja.eesnimi = 'Uusnimi'
+WHERE Tootaja.tootaja_ID = Tootaja.tootaja_ID;
+
+S23 
 CREATE TABLE Tootaja2 AS
 SELECT *
 FROM Tootaja
@@ -106,14 +114,6 @@ FROM Tootaja T
 LEFT JOIN Osakond O ON T.osakond_ID = O.osakond_ID
 LEFT JOIN Asukoht A ON O.asukoht_ID = A.asukoht_ID
 LEFT JOIN Valuuta V ON A.valuutakood = V.valuutakood;
-
-S23 
-UPDATE Tootaja
-LEFT JOIN Osakond o ON Tootaja.osakond_ID = o.osakond_ID
-LEFT JOIN Asukoht a ON o.asukoht_ID = a.asukoht_ID
-LEFT JOIN Valuuta v ON a.valuutakood = v.valuutakood
-SET Tootaja.eesnimi = 'Uusnimi'
-WHERE Tootaja.tootaja_ID = Tootaja.tootaja_ID;
 
 S24
 SELECT T.tootaja_ID 
