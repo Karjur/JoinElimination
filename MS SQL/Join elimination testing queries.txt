@@ -95,13 +95,6 @@ LEFT JOIN Valuuta v ON a.valuutakood = v.valuutakood
 WHERE t.tootaja_ID = t.tootaja_ID;
 
 S22
-SELECT T.tootaja_ID, T.osakond_ID, T.eesnimi, T.palk, T.perenimi, T.alates INTO Tootaja2 
-FROM Tootaja T
-LEFT JOIN Osakond O ON T.osakond_ID = O.osakond_ID
-LEFT JOIN Asukoht A ON O.asukoht_ID = A.asukoht_ID
-LEFT JOIN Valuuta V ON A.valuutakood = V.valuutakood;
-
-S23 
 UPDATE Tootaja
 SET eesnimi = 'Uusnimi'
 FROM Tootaja t
@@ -109,6 +102,13 @@ LEFT JOIN Osakond o ON t.osakond_ID = o.osakond_ID
 LEFT JOIN Asukoht a ON o.asukoht_ID = a.asukoht_ID
 LEFT JOIN Valuuta v ON a.valuutakood = v.valuutakood
 WHERE t.tootaja_ID = t.tootaja_ID;
+
+S23 
+SELECT T.tootaja_ID, T.osakond_ID, T.eesnimi, T.palk, T.perenimi, T.alates INTO Tootaja2 
+FROM Tootaja T
+LEFT JOIN Osakond O ON T.osakond_ID = O.osakond_ID
+LEFT JOIN Asukoht A ON O.asukoht_ID = A.asukoht_ID
+LEFT JOIN Valuuta V ON A.valuutakood = V.valuutakood;
 
 S24
 SELECT T.tootaja_ID 
