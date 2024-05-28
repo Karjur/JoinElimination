@@ -1,0 +1,23 @@
+A1
+
+SELECT mv_id AS movie_id, mv_nam_movie_name AS movie_name
+FROM lMV_Movie
+WHERE TYP_ID =2;
+
+A2
+
+SELECT TYP_GenreType AS genre, Count(*) AS nr_of_movies
+FROM lMV_Movie
+GROUP BY TYP_GenreType;
+
+A3
+
+SELECT mv_id AS movie_id, mv_nam_movie_name AS movie_name
+FROM lMV_Movie
+WHERE RTT_ID =2;
+
+A4
+
+SELECT RTT_RatingType AS rating, Count(*) AS nr_of_movies
+FROM lMV_Movie
+GROUP BY RTT_RatingType;
